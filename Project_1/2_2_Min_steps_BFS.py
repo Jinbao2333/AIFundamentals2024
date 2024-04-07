@@ -15,7 +15,6 @@ def generate_moves(board):
     for i in range(len(board)):
         if board[i] == 'x':
             blank_index = i
-    rows = [board[i: i+3] for i in range(0, len(board), 3)]
     blank_i, blank_j = divmod(blank_index, 3)
     for move in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
         new_i, new_j = blank_i + move[0], blank_j + move[1]
