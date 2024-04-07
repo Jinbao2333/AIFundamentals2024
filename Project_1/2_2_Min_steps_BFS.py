@@ -26,7 +26,6 @@ def generate_moves(board):
             moves.append(new_board)
     return moves
 
-# Breadth-First Search algorithm to solve the board
 def bfs(board, target_state):
     queue = deque([(board, 0)])
     visited = set()
@@ -41,17 +40,13 @@ def bfs(board, target_state):
                 visited.add(tuple(move))
     return -1
 
-def main():
-    target_state = ['1', '2', '3', '4', '5', '6', '7', '8', 'x']
-    input_board = input().split()
-    if count_inversions(input_board) % 2 == 0:
-        steps = bfs(input_board, target_state)
-        if steps != -1:
-            print(steps)
-        else:
-            print("-1000")
+target_state = ['1', '2', '3', '4', '5', '6', '7', '8', 'x']
+input_board = input().split()
+if count_inversions(input_board) % 2 == 0:
+    steps = bfs(input_board, target_state)
+    if steps != -1:
+        print(steps)
     else:
-        print("-1")
-
-if __name__ == "__main__":
-    main()
+        print("-1000")
+else:
+    print("-1")
