@@ -24,7 +24,7 @@ def generate_moves(board):
             moves.append((new_board, dir_name))
     return moves
 
-def heuristic_cost_estimate(board, target_state):
+def cost_estimate(board, target_state):
     count = 0
     for i in range(len(board)):
         if board[i] != target_state[i]:
@@ -32,7 +32,7 @@ def heuristic_cost_estimate(board, target_state):
     return count
 
 def a_star(board, target_state):
-    open_set = [(0 + heuristic_cost_estimate(board, target_state), board, "")]
+    open_set = [(0 + cost_estimate(board, target_state), board, "")]
     heapq.heapify(open_set)
     closed_set = set()
     while open_set:
@@ -43,7 +43,7 @@ def a_star(board, target_state):
             closed_set.add(tuple(current_board))
             for next_board, move_dir in generate_moves(current_board):
                 g = len(moves_so_far) + 1
-                h = heuristic_cost_estimate(next_board, target_state)
+                h = cost_estimate(next_board, target_state)
                 f = g + h
                 heapq.heappush(open_set, (f, next_board, moves_so_far + move_dir))
 
@@ -56,6 +56,6 @@ if count_inversions(input_board) % 2 == 0:
     if steps != "unsolvable":
         print(steps)
     else:
-        print("-1000")
+        print("--error")
 else:
     print("unsolvable")
