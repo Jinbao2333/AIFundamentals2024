@@ -4,8 +4,8 @@
 from collections import deque
 
 def bfs_shortest_path(graph, start, end):
-    visited = set()  # 存储已经访问过的节点
-    queue = deque([(start, 0)])  # 初始化队列，起始节点及到达距离为 0
+    visited = set()
+    queue = deque([(start, 0)])
     
     while queue:
         node, distance = queue.popleft()
@@ -13,7 +13,7 @@ def bfs_shortest_path(graph, start, end):
             return distance
         visited.add(node)  # 将当前节点标记为已访问
         for neighbor in graph[node]:  # 遍历当前节点的邻居节点
-            if neighbor not in visited:  # 如果邻居节点未被访问过
+            if neighbor not in visited:
                 queue.append((neighbor, distance + 1))  # 将邻居节点及其到达距离加入队列，距离加一
     
     return -1
@@ -46,8 +46,8 @@ def naive_dijkstra(n, m, edges):
 
     # 循环，每次选择一个未访问节点进行松弛操作
     for _ in range(n):
-        min_dist = float('inf')  # 初始化最小距离
-        min_idx = -1  # 最小距离对应的节点索引初始化为 -1
+        min_dist = float('inf')
+        min_idx = -1
         # 遍历所有节点，找到未访问节点中距离起点最近的节点
         for i in range(1, n + 1):
             if not vis[i] and d[i] < min_dist:
@@ -61,7 +61,7 @@ def naive_dijkstra(n, m, edges):
             if d[v] > d[min_idx] + w:
                 d[v] = d[min_idx] + w
 
-    if d[n] != float('inf'): # 返回最短距离
+    if d[n] != float('inf'):
         return d[n]
     return -1
 
@@ -86,11 +86,10 @@ def heap_opt_dijkstra(n, m, edges):
     vis = [False] * (n + 1)
     q = [(0, 1)]  # 优先队列 q，存储节点到起点的距离及节点编号
 
-    # 构建邻接表，将每条边的信息添加到堆中
     for u, v, w in edges:
         h[u].append((v, w))
 
-    while q:  # 当优先队列非空
+    while q:
         distance, begin = heapq.heappop(q)  # 从优先队列中取出距离起点最近的节点
         if vis[begin]:  # 如果当前节点已被访问过则跳过
             continue
@@ -173,7 +172,7 @@ def count_inversions(board):
     return inversion_count
 
 def generate_moves(board):
-    moves = []  # 初始化移动列表
+    moves = []
     for i in range(len(board)):
         if board[i] == 'x':
             blank_index = i
@@ -185,11 +184,11 @@ def generate_moves(board):
             new_board = board[:]
             new_board[blank_index], new_board[new_blank_index] = new_board[new_blank_index], new_board[blank_index]  # 移动操作
             moves.append(new_board)  # 将新状态加入移动列表
-    return moves  # 返回所有可行移动的列表
+    return moves
 
 def bfs(board, target_state):
-    queue = deque([(board, 0)])  # 初始化队列，存储当前状态和步数
-    visited = set()  # 已访问状态集合
+    queue = deque([(board, 0)])
+    visited = set()
     while queue:
         current_board, steps = queue.popleft()  # 取出队列中的当前状态和步数
         if current_board == target_state:  # 如果当前状态等于目标状态，则返回步数
@@ -241,10 +240,9 @@ def generate_moves(board):
             moves.append(new_board)  # 将新状态加入移动列表
     return moves  # 返回所有可行移动的列表
 
-# 寻找从初始状态到目标状态最短步数
 def dijkstra(board, target_state):
     heap = [(0, board)]  # 初始化堆，存储步数和当前状态
-    visited = set()  # 初始化已访问状态集合
+    visited = set()
     while heap:
         steps, current_board = heapq.heappop(heap)  # 弹出堆中的当前状态和步数
         if current_board == target_state:  # 如果当前状态等于目标状态，则返回步数
@@ -303,20 +301,20 @@ def cost_estimate(board, target_state):
     return count
 
 def a_star(board, target_state):
-    open_set = [(0 + cost_estimate(board, target_state), board, "")]  # 初始化开放集合，存储估计代价、当前状态和移动序列
-    heapq.heapify(open_set)  # 将开放集合转换为堆
-    closed_set = set()  # 初始化闭合集合
-    while open_set:  # 当开放集合不为空时
-        f, current_board, moves_so_far = heapq.heappop(open_set)  # 从开放集合中弹出估计代价最小的状态
+    open_set = [(0 + cost_estimate(board, target_state), board, "")]  # 初始化开放集，存储估计代价、当前状态和移动序列
+    heapq.heapify(open_set)
+    closed_set = set()  # 初始化闭合集
+    while open_set:
+        f, current_board, moves_so_far = heapq.heappop(open_set)  # 从开放集中 pop 估计代价最小的状态
         if current_board == target_state:  # 如果当前状态等于目标状态，则返回移动序列
             return moves_so_far
         if tuple(current_board) not in closed_set:  # 如果当前状态未在闭合集中
-            closed_set.add(tuple(current_board))  # 将当前状态加入闭合集合
+            closed_set.add(tuple(current_board))  # 将当前状态加入闭合集
             for next_board, move_dir in generate_moves(current_board):  # 遍历当前状态的所有可行移动
                 g = len(moves_so_far) + 1  # 计算新的移动序列长度
                 h = cost_estimate(next_board, target_state)  # 计算新状态到目标状态的代价
                 f = g + h  # 计算新状态的估计代价
-                heapq.heappush(open_set, (f, next_board, moves_so_far + move_dir))  # 将新状态加入开放集合
+                heapq.heappush(open_set, (f, next_board, moves_so_far + move_dir))  # 将新状态加入开放集
     return "unsolvable"
 
 target_state = ['1', '2', '3', '4', '5', '6', '7', '8', 'x']
