@@ -1,26 +1,30 @@
 from collections import deque
 
-def bfs_shortest_path(graph, start, end):
-    visited = set()
-    queue = deque([(start, 0)])  # (节点, 到达该节点的距离)
-    
-    while queue:
-        node, distance = queue.popleft()
-        if node == end:
-            return distance
-        visited.add(node)
-        for neighbor in graph[node]:
-            if neighbor not in visited:
-                queue.append((neighbor, distance + 1))
+def shortest_path(n, edges):
+    graph = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        graph[a].append(b)
 
-    return -1
+    queue = deque([1])
+    visited = [False] * (n + 1) 
+    visited[1] = True
+    distance = [float('inf')] * (n + 1)
+    distance[1] = 0
+
+    while queue:
+        current = queue.popleft()
+        for neighbor in graph[current]:
+            if not visited[neighbor]:
+                queue.append(neighbor)
+                visited[neighbor] = True
+                distance[neighbor] = distance[current] + 1
+
+    if distance[n] != float('inf'):
+        return distance[n]
+    else:
+        return -1
 
 n, m = map(int, input().split())
-graph = {i: [] for i in range(1, n+1)}
+edges = [list(map(int, input().split())) for _ in range(m)]
 
-for _ in range(m):
-    u, v = map(int, input().split())
-    graph[u].append(v)
-    graph[v].append(u)
-
-print(bfs_shortest_path(graph, 1, n))
+print(shortest_path(n, edges))
