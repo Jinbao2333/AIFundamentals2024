@@ -6,7 +6,7 @@ def min_moves_to_bottom_right(n, m, maze):
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
     # Create a visited set to keep track of visited cells
-    visited = set()
+    visited = []
 
     # Create a dictionary to store the parent of each cell
     parent = {}
@@ -35,7 +35,7 @@ def min_moves_to_bottom_right(n, m, maze):
             # Check if the new position is within the maze and not visited yet
             if 0 <= new_row < n and 0 <= new_col < m and maze[new_row][new_col] == 0 and (new_row, new_col) not in visited:
                 # Mark the new position as visited, record its parent, and enqueue it
-                visited.add((new_row, new_col))
+                visited.append((new_row, new_col))
                 parent[(new_row, new_col)] = (row, col)
                 queue.append((new_row, new_col))
 
@@ -51,8 +51,17 @@ def visualize_maze_with_path(maze, path, explored_cells):
         plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
 
     # Color the explored cells
+    max_alpha = 0.8  # 最大透明度
+    min_alpha = 0.2  # 最小透明度
+    alpha_step = (max_alpha - min_alpha) / len(explored_cells)
+
+    current_alpha = max_alpha
     for cell in explored_cells:
-        plt.fill([cell[1]-0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1]-0.5], [cell[0]-0.5, cell[0]-0.5, cell[0] + 0.5, cell[0] + 0.5], color = 'blue', alpha = 0.5)
+        plt.fill([cell[1]-0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1]-0.5],
+                 [cell[0]-0.5, cell[0]-0.5, cell[0] + 0.5, cell[0] + 0.5],
+                 color='blue', alpha=current_alpha)
+        current_alpha -= alpha_step  # 减小透明度值
+
 
     plt.xticks(range(len(maze[0])))
     plt.yticks(range(len(maze)))

@@ -10,14 +10,14 @@ def visualize_maze_with_path(maze, path):
     # 绘制路径
     if path:
         path_x, path_y = zip(*path)
-        plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
+        plt.plot(path_y, path_x, marker='o', markersize=8, color='green', linewidth=3)
 
     # 设置坐标轴刻度和边框
     plt.xticks(range(len(maze[0])))
     plt.yticks(range(len(maze)))
     plt.gca().set_xticks([x - 0.5 for x in range(1, len(maze[0]))], minor=True)
     plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
-    plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
+    plt.grid(which="minor", color="grey", linestyle='-', linewidth=2)
 
     plt.axis('on')  # 显示坐标轴
     plt.show()

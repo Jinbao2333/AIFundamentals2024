@@ -8,7 +8,7 @@ def min_moves_to_bottom_right_dfs(n, m, maze):
     visited = set()
 
     # Create a set to store the explored cells
-    explored_cells = set()
+    explored_cells = []
 
     # Create a dictionary to store the parent of each cell
     parent = {}
@@ -16,7 +16,7 @@ def min_moves_to_bottom_right_dfs(n, m, maze):
     def dfs(row, col):
         # Mark the current cell as visited and explored
         visited.add((row, col))
-        explored_cells.add((row, col))
+        explored_cells.append((row, col))
 
         # Check if we have reached the bottom-right corner
         if row == n - 1 and col == m - 1:
@@ -55,8 +55,16 @@ def visualize_maze_with_path(maze, path, explored_cells):
         plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
 
     # Color the explored cells
+    max_alpha = 0.8  # 最大透明度
+    min_alpha = 0.2  # 最小透明度
+    alpha_step = (max_alpha - min_alpha) / len(explored_cells)
+
+    current_alpha = max_alpha
     for cell in explored_cells:
-        plt.fill([cell[1]-0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1]-0.5], [cell[0]-0.5, cell[0]-0.5, cell[0] + 0.5, cell[0] + 0.5], color='blue', alpha=0.5)
+        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
+                 [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
+                 color = 'blue', alpha = current_alpha)
+        current_alpha -= alpha_step  # 减小透明度值
 
     plt.xticks(range(len(maze[0])))
     plt.yticks(range(len(maze)))

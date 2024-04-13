@@ -1,5 +1,4 @@
 from collections import deque
-import numpy as np
 
 def count_inversions(board):
     inversion_count = 0
