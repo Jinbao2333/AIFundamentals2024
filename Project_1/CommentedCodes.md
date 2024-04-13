@@ -3,30 +3,41 @@
 ```python
 from collections import deque
 
-def bfs_shortest_path(graph, start, end):
-    visited = set()
-    queue = deque([(start, 0)])
-    
+def shortest_path(n, edges):
+    graph = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        graph[a].append(b)
+
+    # 存储待处理的节点
+    queue = deque([1])
+    visited = [False] * (n + 1) 
+    # 起始节点
+    visited[1] = True
+    distance = [float('inf')] * (n + 1)
+    # 起始节点到自身的距离为 0
+    distance[1] = 0
+
+    # BFS
     while queue:
-        node, distance = queue.popleft()
-        if node == end:
-            return distance
-        visited.add(node)  # 将当前节点标记为已访问
-        for neighbor in graph[node]:  # 遍历当前节点的邻居节点
-            if neighbor not in visited:
-                queue.append((neighbor, distance + 1))  # 将邻居节点及其到达距离加入队列，距离加一
-    
-    return -1
+        # 取出当前节点
+        current = queue.popleft()
+        for neighbor in graph[current]:
+            # 如果没访问过就记录下来
+            if not visited[neighbor]:
+                queue.append(neighbor)
+                visited[neighbor] = True
+                distance[neighbor] = distance[current] + 1
+
+    if distance[n] != float('inf'):
+        return distance[n]
+    else:
+        return -1
 
 n, m = map(int, input().split())
-graph = {i: [] for i in range(1, n+1)}  # 初始化图邻接表
+edges = [list(map(int, input().split())) for _ in range(m)]
 
-for _ in range(m):
-    u, v = map(int, input().split())
-    graph[u].append(v)
-    graph[v].append(u)
+print(shortest_path(n, edges))
 
-print(bfs_shortest_path(graph, 1, n))
 ```
 
 ## 1-2
@@ -116,6 +127,7 @@ print(heap_opt_dijkstra(n, m, edges))
 ## 2-1
 ```python
 def is_solvable(board):
+    # 一二维数组相互转换
     board_1d = board.split()
     board_1d = [int(x) if x != 'x' else 0 for x in board_1d]
     board_2d = [board_1d[i:i+3] for i in range(0, len(board_1d), 3)]
@@ -127,13 +139,13 @@ def is_solvable(board):
         
         while stack:
             current_state, visited = stack.pop()  # 弹出当前状态和已访问状态集合
-            if current_state == target_state:  # 如果当前状态等于目标状态，即表示可解
+            if current_state == target_state:  # 如果当前状态等于目标状态，即有解
                 return True
             
             visited.add(tuple(current_state))  # 将当前状态转换为元组并加入已访问状态集合
             blank_index = current_state.index(0)  # 获取空格索引并转换为二维数组的行列坐标
             row, col = divmod(blank_index, 3)
-            directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # 四个方向
+            directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
             
             for dr, dc in directions:  # 遍历四个方向
                 new_row, new_col = row + dr, col + dc  # 新的行列坐标
@@ -144,11 +156,11 @@ def is_solvable(board):
                     new_state[blank_index], new_state[new_blank_index] = new_state[new_blank_index], new_state[blank_index]
                     if tuple(new_state) not in visited:  # 若新状态未被访问过
                         stack.append((new_state, visited))  # 将新状态和已访问状态集合加入栈中
-        return False  # 如果栈为空仍未找到目标状态，即不可解
+        return False  # 如果栈为空仍未找到目标状态，则不可解
     
     initial_state = board_2d
     
-    return dfs(sum(initial_state, []))  # 调用函数并将二维数组转换为一维数组作为参数
+    return dfs(sum(initial_state, []))
 
 input_board = input()
 if is_solvable(input_board):
@@ -160,7 +172,6 @@ else:
 ## 2-2
 ```python
 from collections import deque
-import numpy as np
 
 def count_inversions(board):
     inversion_count = 0
