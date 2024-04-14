@@ -20,17 +20,17 @@
 ## **实验任务：**
 
 * **Task 0：热身练习**
-* 完成农民、狼、羊、白菜过河问题的状态空间图。
-* 完成课堂上介绍的机场问题的求解。
-* **Task 1：**图最短路径问题
-应用并实现不同的搜索算法来寻找图中两点之间的最短路径。
+  - 完成农民、狼、羊、白菜过河问题的状态空间图。
+  - 完成课堂上介绍的机场问题的求解。
+* **Task 1：图最短路径问题**
+\- 应用并实现不同的搜索算法来寻找图中两点之间的最短路径。
 
 1. **BFS 算法**，在所有边权重均为 1 时找到最短路径；
 2. **朴素版 Dijkstra 算法**，用于解决带有非负权重的图中最短路径问题；
 3. **堆优化版 Dijkstra 算法**，通过优先队列优化提高原始 Dijkstra 算法的效率，将面对更多更严格的测试样例。
 * **Task 2：八数码问题**
-1. 用 **DFS（深度优先搜索）**检查目标状态是否存在解；
-2. 用 **BFS**找出从起始状态到目标状态的最少移动步数；
+1. 用 **DFS（深度优先搜索）** 检查目标状态是否存在解；
+2. 用 **BFS（广度优先搜索）** 找出从起始状态到目标状态的最少移动步数；
 3. 用 **Dijkstra 算法**（一种特殊形式的 A*）处理上一个问题；
 4. 使用 $A*$**搜索算法**，结合启发式函数计算启发式代价以寻找最少步数解决方案。
 * Task 3：迷宫问题
@@ -57,31 +57,31 @@
 
 ### 机场问题
 
-由题，我们首先可以刻画出问题的状态空间，三个机场的坐标为变量构成即六维空间. 假设用$C_i$表示（当前状态下）离机场$i$最近的城市集合，那么当前状态的邻接状态中，各$C_i$保持常量，我们有：
+由题，我们首先可以刻画出问题的状态空间，三个机场的坐标为变量构成即六维空间. 假设用 $C_i$ 表示（当前状态下）离机场 $i$ 最近的城市集合，那么当前状态的邻接状态中，各 $C_i$ 保持常量，我们有：
 
-$$f(x_1,y_1,x_2,y_2,x_3,y_3)=\sum_{i=1}^{3}{\sum_{c\in C_i}{(x_i-x_c)^2+(y_i-y_c)^2}}$$
+ $$f(x_1,y_1,x_2,y_2,x_3,y_3)=\sum_{i=1}^{3}{\sum_{c\in C_i}{(x_i-x_c)^2+(y_i-y_c)^2}}$$ 
 
 同时我们对上述问题计算梯度，则有：
 
-$$\nabla f=(\frac{\partial f}{\partial x_1},\frac{\partial f}{\partial y_1},\frac{\partial f}{\partial x_2},\frac{\partial f}{\partial y_2},\frac{\partial f}{\partial x_3},\frac{\partial f}{\partial y_3})$$
+ $$\nabla f=(\frac{\partial f}{\partial x_1},\frac{\partial f}{\partial y_1},\frac{\partial f}{\partial x_2},\frac{\partial f}{\partial y_2},\frac{\partial f}{\partial x_3},\frac{\partial f}{\partial y_3})$$ 
 
-我们可以发现，$$\frac{\partial f}{\partial x_1}=2\sum_{c\in C_1}(x_1-x_c)$$
+我们可以发现， $$\frac{\partial f}{\partial x_1}=2\sum_{c\in C_1}(x_1-x_c)$$ 
 
-在一些简单的情形之下，如只有一个机场需要求解时，我们通过令该式为$0$可以求出解. 但是对于这个问题，我们会发现找不到一个闭合解. 想要找到$f$的最值，我们只能通过找到梯度为$0$的$\vec{x}$，也即求解$\nabla f(\vec x)=0$.
+在一些简单的情形之下，如只有一个机场需要求解时，我们通过令该式为 $0$ 可以求出解. 但是对于这个问题，我们会发现找不到一个闭合解. 想要找到 $f$ 的最值，我们只能通过找到梯度为 $0$ 的 $\vec{x}$ ，也即求解 $\nabla f(\vec x)=0$ .
 
 我们可以通过下述公式更新当前状态来完成最陡上升爬山法：
 
-$$\vec x=\vec x -H^{-1}_{f}(\vec x)\nabla f(\vec x)$$
+ $$\vec x=\vec x -H^{-1}_{f}(\vec x)\nabla f(\vec x)$$ 
 
-其中$H_{f}(\vec x)$是二阶导数的黑塞矩阵，其中矩阵中各元素有如下定义$$H_{ij}=\frac{\partial ^2 f}{\partial x_i \partial x_j}$$. 通过计算可以求得：
+其中 $H_{f}(\vec x)$ 是二阶导数的黑塞矩阵，其中矩阵中各元素有如下定义 $$H_{ij}=\frac{\partial ^2 f}{\partial x_i \partial x_j}$$ . 通过计算可以求得：
 
-$$\nabla f(\vec x)=\begin{pmatrix}2\sum_{c\in C_1}(x_1-x_c)\\2\sum_{c\in C_1}(y_1-y_c)\\2\sum_{c\in C_2}(x_2-x_c) \\2\sum_{c\in C_2}(y_2-y_c) \\2\sum_{c\in C_3}(x_3-x_c) \\2\sum_{c\in C_3}(y_3-y_c) \\\end{pmatrix}$$. 
+ $$ \nabla f(\vec x)=\begin{pmatrix}2\sum_{c\in C_1}(x_1-x_c)\\2\sum_{c\in C_1}(y_1-y_c)\\2\sum_{c\in C_2}(x_2-x_c) \\2\sum_{c\in C_2}(y_2-y_c) \\2\sum_{c\in C_3}(x_3-x_c) \\2\sum_{c\in C_3}(y_3-y_c) \\\end{pmatrix} $$ . 
 
-$$H_{f}(\vec x)=diag(2\sum_{c\in C_1}(1),2\sum_{c\in C_1}(1),2\sum_{c\in C_2}(1),2\sum_{c\in C_2}(1),2\sum_{c\in C_3}(1),2\sum_{c\in C_3}(1))$$. 
+ $$H_{f}(\vec x)=diag(2\sum_{c\in C_1}(1),2\sum_{c\in C_1}(1),2\sum_{c\in C_2}(1),2\sum_{c\in C_2}(1),2\sum_{c\in C_3}(1),2\sum_{c\in C_3}(1))$$ . 
 
-$$H_f^{-1}(\vec x)=diag(\ \cfrac{1}{2\sum_{c\in C_1}(1)},\\cfrac{1}{2\sum_{c\in C_1}(1)},\\cfrac{1}{2\sum_{c\in C_2}(1)},\\cfrac{1}{2\sum_{c\in C_2}(1)},\\cfrac{1}{2\sum_{c\in C_3}(1)},\\cfrac{1}{2\sum_{c\in C_3}(1)}\ )$$. 
+ $$H_f^{-1}(\vec x)=diag(\ \cfrac{1}{2\sum_{c\in C_1}(1)},\\cfrac{1}{2\sum_{c\in C_1}(1)},\\cfrac{1}{2\sum_{c\in C_2}(1)},\\cfrac{1}{2\sum_{c\in C_2}(1)},\\cfrac{1}{2\sum_{c\in C_3}(1)},\\cfrac{1}{2\sum_{c\in C_3}(1)}\ )$$ . 
 
-由此我们可以得到$$\vec x=\vec x -H^{-1}_{f}(\vec x)\nabla f(\vec x)=\begin{pmatrix}\cfrac{\sum_{c\in C_1}(x_c)}{\sum_{c\in C_1}}\\ \cfrac{\sum_{c\in C_1}(y_c)}{\sum_{c\in C_1}}\\ \cfrac{\sum_{c\in C_2}(x_c)}{\sum_{c\in C_2}}\\ \cfrac{\sum_{c\in C_2}(y_c)}{\sum_{c\in C_2}}\\ \cfrac{\sum_{c\in C_3}(x_c)}{\sum_{c\in C_3}}\\ \cfrac{\sum_{c\in C_3}(y_c)}{\sum_{c\in C_3}}\\ \end{pmatrix}$$. 
+由此我们可以得到 $$ \vec x=\vec x -H^{-1}_{f}(\vec x)\nabla f(\vec x)=\begin{pmatrix}\cfrac{\sum_{c\in C_1}(x_c)}{\sum_{c\in C_1}}\\ \cfrac{\sum_{c\in C_1}(y_c)}{\sum_{c\in C_1}}\\ \cfrac{\sum_{c\in C_2}(x_c)}{\sum_{c\in C_2}}\\ \cfrac{\sum_{c\in C_2}(y_c)}{\sum_{c\in C_2}}\\ \cfrac{\sum_{c\in C_3}(x_c)}{\sum_{c\in C_3}}\\ \cfrac{\sum_{c\in C_3}(y_c)}{\sum_{c\in C_3}}\\ \end{pmatrix} $$ . 
 
 ## Task 1：图最短路径问题
 
