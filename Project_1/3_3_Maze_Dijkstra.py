@@ -71,8 +71,9 @@ n, m = map(int, input().split())
 maze = [list(map(int, input().split())) for _ in range(n)]
 
 result, path, explored_cells = MazeDijkstra(n, m, maze)
-print("Minimum number of moves:", result)
-print("Path:", path)
-print("Explored cells:", explored_cells)
+print(result)
+# print("Minimum number of moves:", result)
+# print("Path:", path)
+# print("Explored cells:", explored_cells)
 
 visualize_maze_with_path(maze, path, explored_cells)

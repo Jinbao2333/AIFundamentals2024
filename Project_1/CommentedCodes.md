@@ -341,64 +341,40 @@ else:
 ```
 ## 3-1
 ```python
-
-```
-
-## 3-2
-```python
-
-```
-
-## 3-3
-```python
-import heapq
+from collections import deque
 import matplotlib.pyplot as plt
 
-def min_moves_to_bottom_right_dijkstra(n, m, maze):
-
+def MazeBFS(n, m, maze):
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-    # 存储每个单元格的最小距离
-    dist = {(i, j): float('inf') for i in range(n) for j in range(m)}
-    dist[(0, 0)] = 0
+    visited = []
 
-    # 优先队列，用于Dijkstra，格式为(距离, 单元格)
-    pq = [(0, (0, 0))]
-
-    explored_cells = [(0, 0)]
-
-    # 存储每个单元格的父节点
     parent = {}
 
-    while pq:
-        d, (row, col) = heapq.heappop(pq)
+    queue = deque([(0, 0)])  # 使用双端队列作为BFS的队列，初始将起点加入队列
 
-        # 检查是否到达右下角
-        if row == n - 1 and col == m - 1:
-            # 重建路径
+    while queue:
+        row, col = queue.popleft()  # 弹出队首
+
+        if row == n - 1 and col == m - 1:  # 判断是否到达终点
             path = []
-            while (row, col) != (0, 0):
+            while (row, col) != (0, 0):  # 通过父节点信息回溯路径
                 path.append((row, col))
                 row, col = parent[(row, col)]
             path.append((0, 0))
             path.reverse()
-            return d, path, explored_cells
+            return len(path) - 1, path, visited  # 返回路径长度、路径以及探索过的格子
 
         for dr, dc in directions:
             new_row, new_col = row + dr, col + dc
 
-            # 新位置是否合法（越界）
-            if 0 <= new_row < n and 0 <= new_col < m:
-                new_dist = d + 1 
+            # 判断新格子是否在迷宫范围内 and 没有被访问过 and 可达
+            if 0 <= new_row < n and 0 <= new_col < m and maze[new_row][new_col] == 0 and (new_row, new_col) not in visited:
+                visited.append((new_row, new_col))  # 标记新格子为已访问
+                parent[(new_row, new_col)] = (row, col)  # 记录新格子的父节点信息
+                queue.append((new_row, new_col))  # 将新格子加入队列，准备继续探索
 
-                # 尽量更新最短距离
-                if new_dist < dist[(new_row, new_col)] and maze[new_row][new_col] == 0:
-                    dist[(new_row, new_col)] = new_dist
-                    heapq.heappush(pq, (new_dist, (new_row, new_col)))
-                    explored_cells.append((new_row, new_col))
-                    parent[(new_row, new_col)] = (row, col)
-
-    return -1, [], set() # （虽然根据题意，这种情况不会出现
+    return -1, [], visited
 
 def visualize_maze_with_path(maze, path, explored_cells):
     plt.figure(figsize=(len(maze[0]), len(maze)))
@@ -408,16 +384,17 @@ def visualize_maze_with_path(maze, path, explored_cells):
         path_x, path_y = zip(*path)
         plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
 
-    max_alpha = 0.8  # 最大透明度
+    max_alpha = 0.8
     min_alpha = 0.2
     alpha_step = (max_alpha - min_alpha) / len(explored_cells)
 
     current_alpha = max_alpha
     for cell in explored_cells:
-        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
-                 [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
+        plt.fill([cell[1]-0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1]-0.5],
+                 [cell[0]-0.5, cell[0]-0.5, cell[0] + 0.5, cell[0] + 0.5],
                  color='blue', alpha=current_alpha)
-        current_alpha -= alpha_step  # 随着探索顺序逐渐减小透明度值，可以更改
+        current_alpha -= alpha_step
+
 
     plt.xticks(range(len(maze[0])))
     plt.yticks(range(len(maze)))
@@ -431,7 +408,175 @@ def visualize_maze_with_path(maze, path, explored_cells):
 n, m = map(int, input().split())
 maze = [list(map(int, input().split())) for _ in range(n)]
 
-result, path, explored_cells = min_moves_to_bottom_right_dijkstra(n, m, maze)
+result, path, explored_cells = MazeBFS(n, m, maze)
+print("Minimum number of moves:", result)
+print("Path:", path)
+print("Explored cells:", explored_cells)
+visualize_maze_with_path(maze, path, explored_cells)
+
+```
+
+## 3-2
+```python
+import matplotlib.pyplot as plt
+
+def MazeDFS(n, m, maze):
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    stack = [(0, 0)]
+    # 父节点
+    parent = {(0, 0): None}
+    explored_cells = []
+
+    while stack:
+        # 出栈一个格子进行探索
+        row, col = stack.pop()
+        explored_cells.append((row, col))
+
+        if row == n - 1 and col == m - 1:
+            # 重构路径
+            path = []
+            while (row, col) != (0, 0):
+                path.append((row, col))
+                row, col = parent[(row, col)]
+            path.append((0, 0))
+            path.reverse()
+            return len(path) - 1, path, explored_cells
+
+        for dr, dc in directions:
+            new_row, new_col = row + dr, col + dc
+
+            if 0 <= new_row < n and 0 <= new_col < m and maze[new_row][new_col] == 0 and (new_row, new_col) not in parent:
+                # 记录新格子的父节点
+                parent[(new_row, new_col)] = (row, col)
+                # 将新格子加入栈中
+                stack.append((new_row, new_col))
+
+    return -1, [], explored_cells
+
+def visualize_maze_with_path(maze, path, explored_cells):
+    plt.figure(figsize=(len(maze[0]), len(maze)))
+    plt.imshow(maze, cmap='Greys', interpolation='nearest')
+
+    if path:
+        path_x, path_y = zip(*path)
+        plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
+
+    max_alpha = 0.8
+    min_alpha = 0.2
+    alpha_step = (max_alpha - min_alpha) / len(explored_cells)
+    current_alpha = max_alpha
+    for cell in explored_cells:
+        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
+                 [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
+                 color='blue', alpha=current_alpha)
+        current_alpha -= alpha_step
+
+    plt.xticks(range(len(maze[0])))
+    plt.yticks(range(len(maze)))
+    plt.gca().set_xticks([x - 0.5 for x in range(1, len(maze[0]))], minor=True)
+    plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
+    plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
+
+    plt.axis('on')
+    plt.show()
+
+n, m = map(int, input().split())
+maze = [list(map(int, input().split())) for _ in range(n)]
+
+(result, path, explored_cells) = MazeDFS(n, m, maze)
+
+print("Minimum number of moves:", result)
+print("Path:", path)
+print("Explored cells:", explored_cells)
+
+visualize_maze_with_path(maze, path, explored_cells)
+```
+
+## 3-3
+```python
+import heapq
+import matplotlib.pyplot as plt
+
+def MazeDijkstra(n, m, maze):
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    # 字典 dist用于存储每个格子到起点的最短距离
+    dist = {(i, j): float('inf') for i in range(n) for j in range(m)}
+    dist[(0, 0)] = 0
+
+    # 优先队列(距离, (行坐标, 列坐标))
+    pq = [(0, (0, 0))]
+
+    explored_cells = [(0, 0)]
+
+    parent = {}
+
+    # Dijkstra 循环
+    while pq:
+        # 从队列中取出当前距离最短的格子
+        d, (row, col) = heapq.heappop(pq)
+
+        # 如果当前格子为终点，则……
+        if row == n - 1 and col == m - 1:
+            path = []
+            while (row, col) != (0, 0):
+                path.append((row, col))
+                row, col = parent[(row, col)]
+            path.append((0, 0))
+            path.reverse()
+            return d, path, explored_cells
+
+        for dr, dc in directions:
+            new_row, new_col = row + dr, col + dc
+
+            # 如果新格子位置合法
+            if 0 <= new_row < n and 0 <= new_col < m:
+                # 纳入
+                new_dist = d + 1
+
+                if new_dist < dist[(new_row, new_col)] and maze[new_row][new_col] == 0:
+                    dist[(new_row, new_col)] = new_dist
+                    heapq.heappush(pq, (new_dist, (new_row, new_col)))
+                    explored_cells.append((new_row, new_col))
+                    parent[(new_row, new_col)] = (row, col)
+
+    return -1, [], set()
+
+def visualize_maze_with_path(maze, path, explored_cells):
+    plt.figure(figsize=(len(maze[0]), len(maze)))
+    plt.imshow(maze, cmap='Greys', interpolation='nearest')
+
+    if path:
+        path_x, path_y = zip(*path)
+        plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
+
+    max_alpha = 0.8
+    min_alpha = 0.2
+    alpha_step = (max_alpha - min_alpha) / len(explored_cells)
+    current_alpha = max_alpha
+
+    for cell in explored_cells:
+        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
+                 [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
+                 color='blue', alpha=current_alpha)
+        current_alpha -= alpha_step
+
+    plt.xticks(range(len(maze[0])))
+    plt.yticks(range(len(maze)))
+    plt.gca().set_xticks([x - 0.5 for x in range(1, len(maze[0]))], minor=True)
+    plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
+    plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
+
+    plt.axis('on')
+    plt.show()
+
+n, m = map(int, input().split())
+maze = [list(map(int, input().split())) for _ in range(n)]
+
+result, path, explored_cells = MazeDijkstra(n, m, maze)
+
 print("Minimum number of moves:", result)
 print("Path:", path)
 print("Explored cells:", explored_cells)
@@ -441,5 +586,92 @@ visualize_maze_with_path(maze, path, explored_cells)
 
 ## 3-4
 ```python
+import heapq
+import matplotlib.pyplot as plt
 
+def heuristic(start, goal):
+    # 计算曼哈顿距离作为启发式函数
+    return abs(start[0] - goal[0]) + abs(start[1] - goal[1])
+
+def MazeAstar(n, m, maze):
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    dist = {(i, j): float('inf') for i in range(n) for j in range(m)}
+    dist[(0, 0)] = 0
+
+    # 优先队列 (f = g + h, cell)，存储待访问的单元格及其估计代价
+    pq = [(0 + heuristic((0, 0), (m - 1, n - 1)), (0, 0))]
+
+    explored_cells = [(0, 0)]
+
+    parent = {}
+
+    while pq:
+        # 从优先队列中取出估计代价最小的单元格
+        f, (row, col) = heapq.heappop(pq)
+        g = f - heuristic((row, col), (m - 1, n - 1))  # 计算实际代价
+
+        if row == n - 1 and col == m - 1:
+            # 回溯路径
+            path = []
+            while (row, col) != (0, 0):
+                path.append((row, col))
+                row, col = parent[(row, col)]
+            path.append((0, 0))
+            path.reverse()
+            return g, path, explored_cells
+
+        for dr, dc in directions:
+            new_row, new_col = row + dr, col + dc
+
+            if 0 <= new_row < n and 0 <= new_col < m:
+                new_dist = g + 1  # 计算新的距离
+
+                if new_dist < dist[(new_row, new_col)] and maze[new_row][new_col] == 0:
+                    # 更新距离、优先队列、探索过的单元格和父节点信息
+                    dist[(new_row, new_col)] = new_dist
+                    heapq.heappush(pq, (new_dist + heuristic((new_row, new_col), (m - 1, n - 1)), (new_row, new_col)))
+                    explored_cells.append((new_row, new_col))
+                    parent[(new_row, new_col)] = (row, col)
+
+    return -1, [], set()
+
+def visualize_maze_with_path(maze, path, explored_cells):
+    plt.figure(figsize=(len(maze[0]), len(maze)))
+    plt.imshow(maze, cmap='Greys', interpolation='nearest')
+
+    if path:
+        path_x, path_y = zip(*path)
+        plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
+
+    max_alpha = 0.8
+    min_alpha = 0.2
+    alpha_step = (max_alpha - min_alpha) / len(explored_cells)
+
+    current_alpha = max_alpha
+    for cell in explored_cells:
+        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
+                 [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
+                 color = 'blue', alpha = current_alpha)
+        current_alpha -= alpha_step
+
+    plt.xticks(range(len(maze[0])))
+    plt.yticks(range(len(maze)))
+    plt.gca().set_xticks([x - 0.5 for x in range(1, len(maze[0]))], minor=True)
+    plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
+    plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
+
+    plt.axis('on')
+    plt.show()
+
+n, m = map(int, input().split())
+maze = [list(map(int, input().split())) for _ in range(n)]
+
+result, path, explored_cells = MazeAstar(n, m, maze)
+print(result)
+# print("Minimum number of moves:", result)
+# print("Path:", path)
+# print("Explored cells:", explored_cells)
+
+visualize_maze_with_path(maze, path, explored_cells)
 ```
