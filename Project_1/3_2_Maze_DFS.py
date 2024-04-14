@@ -1,50 +1,33 @@
 import matplotlib.pyplot as plt
 
-def min_moves_to_bottom_right_dfs(n, m, maze):
-    # Define directions: up, down, left, right
+def MazeDFS(n, m, maze):
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-    # Create a visited set to keep track of visited cells
-    visited = set()
-
-    # Create a set to store the explored cells
+    stack = [(0, 0)]
+    parent = {(0, 0): None}
     explored_cells = []
 
-    # Create a dictionary to store the parent of each cell
-    parent = {}
-
-    def dfs(row, col):
-        # Mark the current cell as visited and explored
-        visited.add((row, col))
+    while stack:
+        row, col = stack.pop()
         explored_cells.append((row, col))
 
-        # Check if we have reached the bottom-right corner
         if row == n - 1 and col == m - 1:
-            # Reconstruct the path
             path = []
             while (row, col) != (0, 0):
                 path.append((row, col))
                 row, col = parent[(row, col)]
             path.append((0, 0))
             path.reverse()
-            return len(path) - 1, path
+            return len(path) - 1, path, explored_cells
 
-        # Explore all possible directions
         for dr, dc in directions:
             new_row, new_col = row + dr, col + dc
 
-            # Check if the new position is within the maze and not visited yet
-            if 0 <= new_row < n and 0 <= new_col < m and maze[new_row][new_col] == 0 and (new_row, new_col) not in visited:
-                # Record the parent of the new position and recursively call dfs
+            if 0 <= new_row < n and 0 <= new_col < m and maze[new_row][new_col] == 0 and (new_row, new_col) not in parent:
                 parent[(new_row, new_col)] = (row, col)
-                result = dfs(new_row, new_col)
-                if result:
-                    return result
+                stack.append((new_row, new_col))
 
-        return None
-
-    # Start DFS from the top-left corner
-    return dfs(0, 0), explored_cells
+    return -1, [], explored_cells
 
 def visualize_maze_with_path(maze, path, explored_cells):
     plt.figure(figsize=(len(maze[0]), len(maze)))
@@ -54,9 +37,8 @@ def visualize_maze_with_path(maze, path, explored_cells):
         path_x, path_y = zip(*path)
         plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
 
-    # Color the explored cells
-    max_alpha = 0.8  # 最大透明度
-    min_alpha = 0.2  # 最小透明度
+    max_alpha = 0.8
+    min_alpha = 0.2
     alpha_step = (max_alpha - min_alpha) / len(explored_cells)
 
     current_alpha = max_alpha
@@ -64,7 +46,7 @@ def visualize_maze_with_path(maze, path, explored_cells):
         plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
                  [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
                  color = 'blue', alpha = current_alpha)
-        current_alpha -= alpha_step  # 减小透明度值
+        current_alpha -= alpha_step
 
     plt.xticks(range(len(maze[0])))
     plt.yticks(range(len(maze)))
@@ -75,12 +57,10 @@ def visualize_maze_with_path(maze, path, explored_cells):
     plt.axis('on')
     plt.show()
 
-# Read input
 n, m = map(int, input().split())
 maze = [list(map(int, input().split())) for _ in range(n)]
 
-# Calculate minimum number of moves, the path, and the explored cells
-(result, path), explored_cells = min_moves_to_bottom_right_dfs(n, m, maze)
+(result, path, explored_cells) = MazeDFS(n, m, maze)
 print("Minimum number of moves:", result)
 print("Path:", path)
 print("Explored cells:", explored_cells)

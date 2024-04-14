@@ -339,3 +339,107 @@ if count_inversions(input_board) % 2 == 0:
 else:
     print("unsolvable")
 ```
+## 3-1
+```python
+
+```
+
+## 3-2
+```python
+
+```
+
+## 3-3
+```python
+import heapq
+import matplotlib.pyplot as plt
+
+def min_moves_to_bottom_right_dijkstra(n, m, maze):
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    # 存储每个单元格的最小距离
+    dist = {(i, j): float('inf') for i in range(n) for j in range(m)}
+    dist[(0, 0)] = 0
+
+    # 优先队列，用于Dijkstra，格式为(距离, 单元格)
+    pq = [(0, (0, 0))]
+
+    explored_cells = [(0, 0)]
+
+    # 存储每个单元格的父节点
+    parent = {}
+
+    while pq:
+        d, (row, col) = heapq.heappop(pq)
+
+        # 检查是否到达右下角
+        if row == n - 1 and col == m - 1:
+            # 重建路径
+            path = []
+            while (row, col) != (0, 0):
+                path.append((row, col))
+                row, col = parent[(row, col)]
+            path.append((0, 0))
+            path.reverse()
+            return d, path, explored_cells
+
+        for dr, dc in directions:
+            new_row, new_col = row + dr, col + dc
+
+            # 新位置是否合法（越界）
+            if 0 <= new_row < n and 0 <= new_col < m:
+                new_dist = d + 1 
+
+                # 尽量更新最短距离
+                if new_dist < dist[(new_row, new_col)] and maze[new_row][new_col] == 0:
+                    dist[(new_row, new_col)] = new_dist
+                    heapq.heappush(pq, (new_dist, (new_row, new_col)))
+                    explored_cells.append((new_row, new_col))
+                    parent[(new_row, new_col)] = (row, col)
+
+    return -1, [], set() # （虽然根据题意，这种情况不会出现
+
+def visualize_maze_with_path(maze, path, explored_cells):
+    plt.figure(figsize=(len(maze[0]), len(maze)))
+    plt.imshow(maze, cmap='Greys', interpolation='nearest')
+
+    if path:
+        path_x, path_y = zip(*path)
+        plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
+
+    max_alpha = 0.8  # 最大透明度
+    min_alpha = 0.2
+    alpha_step = (max_alpha - min_alpha) / len(explored_cells)
+
+    current_alpha = max_alpha
+    for cell in explored_cells:
+        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
+                 [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
+                 color='blue', alpha=current_alpha)
+        current_alpha -= alpha_step  # 随着探索顺序逐渐减小透明度值，可以更改
+
+    plt.xticks(range(len(maze[0])))
+    plt.yticks(range(len(maze)))
+    plt.gca().set_xticks([x - 0.5 for x in range(1, len(maze[0]))], minor=True)
+    plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
+    plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
+
+    plt.axis('on')
+    plt.show()
+
+n, m = map(int, input().split())
+maze = [list(map(int, input().split())) for _ in range(n)]
+
+result, path, explored_cells = min_moves_to_bottom_right_dijkstra(n, m, maze)
+print("Minimum number of moves:", result)
+print("Path:", path)
+print("Explored cells:", explored_cells)
+
+visualize_maze_with_path(maze, path, explored_cells)
+```
+
+## 3-4
+```python
+
+```

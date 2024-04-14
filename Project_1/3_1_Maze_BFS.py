@@ -1,25 +1,20 @@
 from collections import deque
 import matplotlib.pyplot as plt
 
-def min_moves_to_bottom_right(n, m, maze):
-    # Define directions: up, down, left, right
+def MazeBFS(n, m, maze):
+
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-    # Create a visited set to keep track of visited cells
     visited = []
 
-    # Create a dictionary to store the parent of each cell
     parent = {}
 
-    # Create a queue for BFS
-    queue = deque([(0, 0)])  # (row, column)
+    queue = deque([(0, 0)])
 
     while queue:
         row, col = queue.popleft()
 
-        # Check if we have reached the bottom-right corner
         if row == n - 1 and col == m - 1:
-            # Reconstruct the path
             path = []
             while (row, col) != (0, 0):
                 path.append((row, col))
@@ -28,18 +23,14 @@ def min_moves_to_bottom_right(n, m, maze):
             path.reverse()
             return len(path) - 1, path, visited
 
-        # Explore all possible directions
         for dr, dc in directions:
             new_row, new_col = row + dr, col + dc
 
-            # Check if the new position is within the maze and not visited yet
             if 0 <= new_row < n and 0 <= new_col < m and maze[new_row][new_col] == 0 and (new_row, new_col) not in visited:
-                # Mark the new position as visited, record its parent, and enqueue it
                 visited.append((new_row, new_col))
                 parent[(new_row, new_col)] = (row, col)
                 queue.append((new_row, new_col))
 
-    # If no path is found, return -1
     return -1, [], visited
 
 def visualize_maze_with_path(maze, path, explored_cells):
@@ -50,9 +41,8 @@ def visualize_maze_with_path(maze, path, explored_cells):
         path_x, path_y = zip(*path)
         plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
 
-    # Color the explored cells
-    max_alpha = 0.8  # 最大透明度
-    min_alpha = 0.2  # 最小透明度
+    max_alpha = 0.8
+    min_alpha = 0.2
     alpha_step = (max_alpha - min_alpha) / len(explored_cells)
 
     current_alpha = max_alpha
@@ -72,12 +62,10 @@ def visualize_maze_with_path(maze, path, explored_cells):
     plt.axis('on')
     plt.show()
 
-# Read input
 n, m = map(int, input().split())
 maze = [list(map(int, input().split())) for _ in range(n)]
 
-# Calculate minimum number of moves, the path, and the explored cells
-result, path, explored_cells = min_moves_to_bottom_right(n, m, maze)
+result, path, explored_cells = MazeBFS(n, m, maze)
 print("Minimum number of moves:", result)
 print("Path:", path)
 print("Explored cells:", explored_cells)
