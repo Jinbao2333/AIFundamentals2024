@@ -5,7 +5,7 @@ def MazeBFS(n, m, maze):
 
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-    visited = []
+    visited = [(0, 0)]
 
     parent = {}
 
@@ -39,18 +39,19 @@ def visualize_maze_with_path(maze, path, explored_cells):
 
     if path:
         path_x, path_y = zip(*path)
-        plt.plot(path_y, path_x, marker='o', markersize=8, color='red', linewidth=3)
+        plt.plot(path_y, path_x, marker='o', markersize=24, color='#AC1F18', linewidth=9)
 
     max_alpha = 0.8
     min_alpha = 0.2
     alpha_step = (max_alpha - min_alpha) / len(explored_cells)
 
     current_alpha = max_alpha
-    for cell in explored_cells:
-        plt.fill([cell[1]-0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1]-0.5],
-                 [cell[0]-0.5, cell[0]-0.5, cell[0] + 0.5, cell[0] + 0.5],
-                 color='blue', alpha=current_alpha)
-        current_alpha -= alpha_step  # 减小透明度值
+    for idx, cell in enumerate(explored_cells, 1):
+        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
+                [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
+                color='#954416', alpha=current_alpha)
+        plt.text(cell[1], cell[0], str(idx), ha='center', va='center', fontsize=20, color='white', fontfamily='Bahnschrift')
+        current_alpha -= alpha_step
 
 
     plt.xticks(range(len(maze[0])))
