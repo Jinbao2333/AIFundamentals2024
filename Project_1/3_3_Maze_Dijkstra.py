@@ -2,7 +2,7 @@ import heapq
 import matplotlib.pyplot as plt
 
 def MazeDijkstra(n, m, maze):
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 
     dist = {(i, j): float('inf') for i in range(n) for j in range(m)}
     dist[(0, 0)] = 0
@@ -40,12 +40,13 @@ def MazeDijkstra(n, m, maze):
     return -1, [], set()
 
 def visualize_maze_with_path(maze, path, explored_cells):
-    plt.figure(figsize=(len(maze[0]), len(maze)))
+    plt.figure(figsize=(8, 6))
     plt.imshow(maze, cmap='Greys', interpolation='nearest')
-
-    if path:
-        path_x, path_y = zip(*path)
-        plt.plot(path_y, path_x, marker='o', markersize=24, color='#2177B8', linewidth=9)
+    plt.xticks(range(len(maze[0])))
+    plt.yticks(range(len(maze)))
+    plt.gca().set_xticks([x - 0.5 for x in range(1, len(maze[0]))], minor=True)
+    plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
+    plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
 
     max_alpha = 0.8
     min_alpha = 0.2
@@ -56,14 +57,14 @@ def visualize_maze_with_path(maze, path, explored_cells):
         plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
                 [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
                 color='#986524', alpha=current_alpha)
-        plt.text(cell[1], cell[0], str(idx), ha='center', va='center', fontsize=20, color='white', fontfamily='Bahnschrift')
+        plt.text(cell[1], cell[0], str(idx), ha='center', va='center', fontsize=300/len(maze[0]), color='white', fontfamily='Bahnschrift')
         current_alpha -= alpha_step
+        plt.pause(2/len(explored_cells))
+        plt.draw()
 
-    plt.xticks(range(len(maze[0])))
-    plt.yticks(range(len(maze)))
-    plt.gca().set_xticks([x - 0.5 for x in range(1, len(maze[0]))], minor=True)
-    plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
-    plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
+    if path:
+        path_x, path_y = zip(*path)
+        plt.plot(path_y, path_x, marker='o', markersize=300/len(maze[0]), color='#2177B8', linewidth=300/len(maze[0]))
 
     plt.axis('on')
     plt.show()

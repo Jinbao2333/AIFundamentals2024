@@ -2,11 +2,10 @@ import heapq
 import matplotlib.pyplot as plt
 
 def heuristic(start, goal):
-    # 计算曼哈顿距离作为启发式函数
     return abs(start[0] - goal[0]) + abs(start[1] - goal[1])
 
 def MazeAstar(n, m, maze):
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
     # 每个单元格的最小距离
     dist = {(i, j): float('inf') for i in range(n) for j in range(m)}
@@ -23,7 +22,6 @@ def MazeAstar(n, m, maze):
         f, (row, col) = heapq.heappop(pq)
         g = f - heuristic((row, col), (m - 1, n - 1))
 
-        # 检查是否到达右下角
         if row == n - 1 and col == m - 1:
             path = []
             while (row, col) != (0, 0):
@@ -36,7 +34,6 @@ def MazeAstar(n, m, maze):
         for dr, dc in directions:
             new_row, new_col = row + dr, col + dc
 
-            # 检查新位置是否在迷宫内
             if 0 <= new_row < n and 0 <= new_col < m:
                 new_dist = g + 1
 
@@ -49,30 +46,30 @@ def MazeAstar(n, m, maze):
     return -1, [], set()
 
 def visualize_maze_with_path(maze, path, explored_cells):
-    plt.figure(figsize=(len(maze[0]), len(maze)))
+    plt.figure(figsize=(8, 6))
     plt.imshow(maze, cmap='Greys', interpolation='nearest')
-
-    if path:
-        path_x, path_y = zip(*path)
-        plt.plot(path_y, path_x, marker='o', markersize=24, color='#7E1671', linewidth=9)
-
-    max_alpha = 0.8
-    min_alpha = 0.2
-    alpha_step = (max_alpha - min_alpha) / len(explored_cells)
-
-    current_alpha = max_alpha
-    for idx, cell in enumerate(explored_cells, 1):
-        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
-                [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
-                color='#126E82', alpha=current_alpha)
-        plt.text(cell[1], cell[0], str(idx), ha='center', va='center', fontsize=20, color='white', fontfamily='Bahnschrift')
-        current_alpha -= alpha_step
-
     plt.xticks(range(len(maze[0])))
     plt.yticks(range(len(maze)))
     plt.gca().set_xticks([x - 0.5 for x in range(1, len(maze[0]))], minor=True)
     plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
     plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
+    
+    max_alpha = 0.8
+    min_alpha = 0.2
+    alpha_step = (max_alpha - min_alpha) / len(explored_cells)
+    current_alpha = max_alpha
+    for idx, cell in enumerate(explored_cells, 1):
+        plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
+                [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
+                color='#126E82', alpha=current_alpha)
+        plt.text(cell[1], cell[0], str(idx), ha='center', va='center', fontsize=300/len(maze[0]), color='white', fontfamily='Bahnschrift')
+        current_alpha -= alpha_step
+        plt.pause(2/len(explored_cells))
+        plt.draw()
+
+    if path:
+        path_x, path_y = zip(*path)
+        plt.plot(path_y, path_x, marker='o', markersize=200/len(maze[0]), color='#7E1671', linewidth=300/len(maze[0]))
 
     plt.axis('on')
     plt.show()
