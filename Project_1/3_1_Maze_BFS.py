@@ -34,7 +34,7 @@ def MazeBFS(n, m, maze):
     return -1, [], visited
 
 def visualize_maze_with_path(maze, path, explored_cells):
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(9, 7))
     plt.imshow(maze, cmap='Greys', interpolation='nearest')
     plt.xticks(range(len(maze[0])))
     plt.yticks(range(len(maze)))
@@ -42,15 +42,15 @@ def visualize_maze_with_path(maze, path, explored_cells):
     plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
     plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
 
-    max_alpha = 0.9
-    min_alpha = 0.3
+    max_alpha = 1
+    min_alpha = 0.4
     alpha_step = (max_alpha - min_alpha) / len(explored_cells)
 
     current_alpha = max_alpha
     for idx, cell in enumerate(explored_cells, 1):
         plt.fill([cell[1] - 0.5, cell[1] + 0.5, cell[1] + 0.5, cell[1] - 0.5],
                 [cell[0] - 0.5, cell[0] - 0.5, cell[0] + 0.5, cell[0] + 0.5],
-                color='#954416', alpha=current_alpha)
+                color='#FC8C23', alpha=current_alpha)
         plt.text(cell[1], cell[0], str(idx), ha='center', va='center', fontsize=300/len(maze[0]), color='white', fontfamily='Bahnschrift')
         current_alpha -= alpha_step
         plt.pause(2/len(explored_cells))

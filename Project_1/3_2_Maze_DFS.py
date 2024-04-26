@@ -38,7 +38,7 @@ def visualize_maze_with_path(maze, path, explored_cells):
     plt.gca().set_yticks([y - 0.5 for y in range(1, len(maze))], minor=True)
     plt.grid(which="minor", color="black", linestyle='-', linewidth=2)
 
-    max_alpha = 0.9
+    max_alpha = 1
     min_alpha = 0.1
     alpha_step = (max_alpha - min_alpha) / len(explored_cells)
 
@@ -49,12 +49,12 @@ def visualize_maze_with_path(maze, path, explored_cells):
                 color='#113285', alpha=current_alpha)
         plt.text(cell[1], cell[0], str(idx), ha='center', va='center', fontsize=300/len(maze[0]), color='white', fontfamily='Bahnschrift')
         current_alpha -= alpha_step
-        plt.pause(1/len(explored_cells))
+        plt.pause(2/len(explored_cells))
         plt.draw()
 
     if path:
         path_x, path_y = zip(*path)
-        plt.plot(path_y, path_x, marker='o', markersize=300/len(maze[0]), color='#FFD111', linewidth=300/len(maze[0]))
+        plt.plot(path_y, path_x, marker='o', markersize=300/len(maze[0]), color='#F9A633', linewidth=300/len(maze[0]))
 
     plt.axis('on')
     plt.show()
