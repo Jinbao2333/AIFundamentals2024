@@ -40,7 +40,8 @@
     
     ​	到此，我们已经证明了$R$.
     
-    
+
+---
 
 ## Lec 8
 
@@ -101,17 +102,63 @@
     
     问题：使用逻辑推理，分析 E 是否犯了罪。
     
-    ​	首先，我们可以将这些已知的内容转化为一些一阶确定子句：
     
-     - 违反环境保护法的行为是犯罪行为：$AgainstLaw(x) \ \Rightarrow Criminal(x)$
-     - 倾倒有毒废物至环境中：$PourPoison(x, \ env)$
-     - 未经授权倾倒有毒废物是违法的：$ PourPoison(x, \ env) \vee \neg EmergencyAuth(x) \Rightarrow AgainstLaw(x)$
-     - 声称为了防止更严重的环境灾害：$Claim(x)$
-     - 证明为了防止更严重的环境灾害：$Prove(x)$
-     - 证明后，企业可以申请紧急授权来倾倒有毒废物以防止更大的环境灾害：$Prove(x) \Rightarrow EmergencyAuth(x)$
-     - 湖泊被政府指定为自然保护区：$ProtectedArea(Lake)$
     
-    ​	接下来，我们可以使用逻辑推理来分析 E 是否犯了罪，假定该湖泊名称为 L。
+     ​	**首先**，我们可以将这些已知的内容转化为一些一阶确定子句：
+	
+	
+	- 违反环境保护法的行为是犯罪行为：$AgainstLaw(x) \ \Rightarrow Criminal(x)$
+	
+	- 倾倒有毒废物至环境中：$PourPoison(x, \ env) \wedge Environment(env)$
+	
+	- 湖泊属于环境：$Lake(L) \Rightarrow Environment(L)$
+    
+    - 未经授权倾倒有毒废物是违法的：$ PourPoison(x, \ env) \wedge \neg EmergencyAuth(x) \Rightarrow AgainstLaw(x)$
+    
+    - 声称为了防止更严重的环境灾害：$Claim(x)$
+    
+    - 证明为了防止更严重的环境灾害：$Prove(x)$
+    
+    - 证明后，企业可以申请紧急授权来倾倒有毒废物以防止更大的环境灾害，不能证明则无效：
+    
+    
+      - $Prove(x) \Rightarrow EmergencyAuth(x)$
+      - $\neg Prove(x) \Rightarrow \neg EmergencyAuth(x)$
+    
+      
+    
+      **接下来**，我们可以使用后向链接推理来分析 E 是否犯了罪，假定该湖泊名称为 L，我们已知 $PourPoison(E,L)$ ,$Claim(E)$, $\neg Prove(E)$。
+    
+      我们的**目标结论**：企业家 E 犯罪了，即 $Criminal(E)$。
+    
+      为了使用后向链接进行推理，要先逐步确定达成这个结论所需的必要前提条件，然后检查这些条件是否被满足。
+    
+      1. **必要条件1**：在 A 国，违反环境保护法的行为是犯罪，即要证明 $AgainstLaw(E)$ ；
+    
+      2. **必要条件2**：E 实施了倒入有毒废物进入湖泊 L 的行为，即 $PourPoison(E,L)$；
+    
+      3. **必要条件3**：E 未获得紧急授权，即 $\neg EmergencyAuth(E)$；
+    
+      4. **必要条件4**：湖泊 L 属于环境的范畴，即$Environment(L)$。
+    
+		证明树如下所示：
+    
+         ![证明树](https://raw.githubusercontent.com/Jinbao2333/AIFundamentals2024/9249154ea44aa5d6507beb175f3341b0f88216a4/Assignment2/B_Chaining.svg)
+    
+      现在，我们逆向验证这些条件：
+    
+      - 从结论 $Criminal(E)$ 出发；
+    
+      - 我们检查 E 的行为是否违反了环境保护法 $AgainstLaw(E)$ ，这需要 E 进行非法倾倒有毒废物的行为 $PourPoison(E,L)$，并且没有证据获取紧急授权 $\neg EmergencyAuth(E)$；
+    
+      - 对于第一项条件，E 确实倾倒了有毒废物进入湖泊，湖泊属于环境，也即 $PourPoison(E,L) \wedge Environment(L)$ ；
+    
+      - 接着，我们验证第二项条件。由于没有证据表明 E 有紧急授权，这一条件不成立，意味着没有合法理由豁免 E 的行为。而且通过 E 的声明 $Claim(E)$ 且没有证据证明其为了避免更大危害，即  $\neg Prove(E)$，也不足以获取紧急授权，所以没有例外情况，我们证明了 $\neg EmergencyAuth(E)$。
+    
+
+​		**综上**，以上条件均能满足，我们证明了 E 确实犯罪了，即 $Criminal(E)$。
+
+---
 
 ## Lec 9
 1. **语义网络**
