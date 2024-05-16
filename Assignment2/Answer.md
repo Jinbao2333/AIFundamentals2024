@@ -1,5 +1,5 @@
 ## Lec 7
-1. 写出复合命题 $(p \lor \neg q) \rightarrow (p \land q)$ 的真值表。
+1. **写出复合命题 $(p \lor \neg q) \rightarrow (p \land q)$ 的真值表。**
 
     | $p$ | $q$ | $\neg q$ | $p \lor \neg q$ | $p \land q$ | **$(p \lor \neg q) \rightarrow (p \land q)$** |
     |:---:|:---:|:-------:|:------------:|:---------:|:--------------------------------------:|
@@ -8,70 +8,113 @@
     |  F  |  T  |    F    |      F       |     F     |                  **T**                     |
     |  F  |  F  |    T    |      T       |     F     |                  **F**                     |
 
-2. 给定知识库中的句子：
+    
+
+2. **给定知识库中的句子：**
+   
     -  $P \rightarrow Q$ 
     -  $Q \rightarrow R$
     -  $P$
     
     使用 Modus Ponens 推理规则证明 $R$ 。
-
-    我们知道，Modus Ponens（假言推理）的形式是：
-
+    
+    
+    
+    ​	我们知道，Modus Ponens（假言推理规则）的形式是：
+    
     $$
     \frac{\quad P, P \rightarrow Q}{\therefore Q}
     $$
-
-    现在，运用 Modus Ponens 来推导 $R$：
-
-    1. **从 $P \rightarrow Q$ 和 $P$ 推导出 $Q$**：
+    
+    ​	现在，运用 Modus Ponens 来推导 $R$：
+    
+    1. 从 $P \rightarrow Q$ 和 $P$ 推导出 $Q$：
     $$
     \frac{\quad P, P \rightarrow Q}{\therefore Q}
     $$
-
-    2. **从 $Q \rightarrow R$ 和 $Q$ 推导出 $R$**：
+    
+    2. 从 $Q \rightarrow R$ 和 $Q$ 推导出 $R$：
     $$
     \frac{\quad Q, Q \rightarrow R}{\therefore R}
     $$
-
-    到此，我们已经证明了$R$.
+    
+    ​	到此，我们已经证明了$R$.
+    
+    
 
 ## Lec 8
-1. 全称量词和存在量词的应用
+
+1. **全称量词和存在量词的应用**
 
     使用一阶逻辑的全称量词和存在量词来表达以下两个句子：
 
     (1) 所有的国王都是富有的。
-(2) 有些国王是富有的。
+
+    ​	$$ \forall x \ King(x) \Rightarrow Rich(x) $$
+
+    
+
+    (2) 有些国王是富有的。
+
+    ​	$$\exists x \ King(x) \wedge Rich(x) $$
+    
+    
 
 
-2. 等词应用
+2. **等词应用**
 
     等词用于表达两个项指代同一对象或不同对象（加否定词时表示两个项不是同一个对象）：
-
     (1) Richard 至少有两个兄弟。
-(2) Richard 有两个兄弟 x 和 y。
 
+    ​	$$\exists x,y \ Brother(x, \ Richard) \wedge Brother(y, \ Richard) \wedge \neg (x = y)$$
 
-3. 推理
+    
+
+    (2) Richard 有两个兄弟 x 和 y。
+
+    ​	$$ Brother(x, \ Richard) \wedge Brother(y, \ Richard) \wedge (x = y) \wedge \forall i \ Brother(i, \ Richard ) \Rightarrow (i=x \vee i=y) $$
+
+    
+
+3. **推理**
 
     使用前向链接和后向链接，从已知事实推导出新事实：
 
     (1) 已知知识库中有以下信息：
-    - $\forall x \, \text{King}(x) \Rightarrow \text{Rich}(x)$ （所有国王都是富有的）
+    - $\forall x \ \text{King}(x) \Rightarrow \text{Rich}(x)$ （所有国王都是富有的）
     - $\text{King(Charles)}$ （查尔斯是国王）
-        
+      
+    
     问题：使用前向链接推理出查尔斯是富有的。
-
+    
+    ​	首先消去全称量词，得 $King(x) \wedge Rich(x)$ ；
+    
+    ​	再由已知 $King(Charles)$ 得 $King(Charles) \wedge Rich(Charles)$ ，也即 $Rich(Charles)$ ；
+    
+    ​	所以我们证明了 *Charles* 是富有的。
+    
+    
+    
     (2) 在 A 国家，任何违反环境保护法的行为都被视为犯罪行为。未经授权倾倒有毒废物至环境中是违法的。如果企业能证明其行为是为了防止更大的环境灾害，可以申请倾倒有毒废物的紧急授权。
-
+    
     某湖泊被政府指定为自然保护区。企业家 E 在该湖泊中倾倒了有毒废物。E 声称其行为是为了防止更严重的环境灾害。此外，没有证据直接表明 E 申请了紧急授权。
-
+    
     问题：使用逻辑推理，分析 E 是否犯了罪。
+    
+    ​	首先，我们可以将这些已知的内容转化为一些一阶确定子句：
+    
+     - 违反环境保护法的行为是犯罪行为：$AgainstLaw(x) \ \Rightarrow Criminal(x)$
+     - 倾倒有毒废物至环境中：$PourPoison(x, \ env)$
+     - 未经授权倾倒有毒废物是违法的：$ PourPoison(x, \ env) \vee \neg EmergencyAuth(x) \Rightarrow AgainstLaw(x)$
+     - 声称为了防止更严重的环境灾害：$Claim(x)$
+     - 证明为了防止更严重的环境灾害：$Prove(x)$
+     - 证明后，企业可以申请紧急授权来倾倒有毒废物以防止更大的环境灾害：$Prove(x) \Rightarrow EmergencyAuth(x)$
+     - 湖泊被政府指定为自然保护区：$ProtectedArea(Lake)$
+    
+    ​	接下来，我们可以使用逻辑推理来分析 E 是否犯了罪，假定该湖泊名称为 L。
 
 ## Lec 9
-知识表示和量化不确定性
-
-1. 语义网络
+1. **语义网络**
 
     用语义网络表示下列信息：
 
@@ -89,7 +132,7 @@
     (b) 说明张智教授和李物副教授在语义网络中的位置及其关联属性。
 
 
-2. 用概率来量化不确定性
+2. **用概率来量化不确定性**
 
     假设你是应急管理部门的一名决策分析师，任务是为城市近期可能发生的自然灾害（例如洪水或地震）制定一个应急响应计划。
 
