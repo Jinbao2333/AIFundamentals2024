@@ -180,13 +180,19 @@
     
      - 张智教授最近发表了一篇关于机器学习的研究论文，在人工智能领域获得了广泛认可。
     
+    以上信息的语义网络图如下：
+    
+    ![Semantic Network 2](https://raw.githubusercontent.com/Jinbao2333/AIFundamentals2024/7ff50acc27418b6a2b23b47efe7f17189bf9a6b8/Assignment2/sem_net2.svg)
+    
     问题：
     
     (a) 给出华东师范大学在语义网络中的表示。
     
-    
+    ​	如上图所示。
     
     (b) 说明张智教授和李物副教授在语义网络中的位置及其关联属性。
+    
+    ​	关系如上图所示，关联属性，都属于华东师范大学
 
 
 2. **用概率来量化不确定性**
