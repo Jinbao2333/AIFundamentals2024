@@ -1,8 +1,8 @@
 ## Lec 7
 1. ### **基本逻辑**
-	写出复合命题 $(p \lor \neg q) \rightarrow (p \land q)$ 的真值表. 
+	写出复合命题 $(p \vee \neg q) \rightarrow (p \wedge q)$ 的真值表. 
 
-    | $p$ | $q$ | $\neg q$ | $p \lor \neg q$ | $p \land q$ | **$(p \lor \neg q) \rightarrow (p \land q)$** |
+    | $p$ | $q$ | $\neg q$ | $p \vee \neg q$ | $p \wedge q$ | **$(p \vee \neg q) \rightarrow (p \wedge q)$** |
     |:---:|:---:|:-------:|:------------:|:---------:|:--------------------------------------:|
     |  T  |  T  |    F    |      T       |     T     |                  **T**                     |
     |  T  |  F  |    T    |      T       |     F     |                  **F**                     |
