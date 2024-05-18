@@ -1,7 +1,7 @@
 # AI Fundamentals - Assignment 2
 
 **Release Date:** 2024-04-28 12:00  
-**Deadline:** 2024-05-19 24:00
+**Deadline:** 2024-05-19 24:00 (*DONE*)
 
 ## Assignment Overview
 
