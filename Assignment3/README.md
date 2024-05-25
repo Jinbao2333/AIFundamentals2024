@@ -8,6 +8,7 @@
 This assignment covers:
 - Bayes rules
 - CPT
+- …
 
 ## Submission Guidelines
 
