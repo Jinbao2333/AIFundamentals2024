@@ -8,7 +8,7 @@
 This assignment covers:
 - Bayes rules
 - CPT
-- …
+- Probability calculation
 
 ## Submission Guidelines
 
