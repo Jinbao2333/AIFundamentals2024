@@ -40,7 +40,7 @@
     \cfrac{\quad Q, Q \rightarrow R}{\therefore R}
    $$
    
-    ​	到此，我们已经证明了$R$.
+    ​	到此，我们已经证明了 $R$.
    
 
 ---
